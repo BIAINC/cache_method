@@ -493,4 +493,20 @@ describe CacheMethod do
     a.ack(hyde)
     a.ack_count.must_equal 2
   end
+
+  it %{ttl_func} do
+    t = Tardis.new
+
+    t.cache_method_cached?(:store, false).must_equal false
+    t.cache_method_cached?(:store, true).must_equal false
+
+    t.store(false)
+    sleep Tardis.short_ttl * 2
+    t.cache_method_cached?(:store, false).must_equal false
+    t.cache_method_cached?(:store, true).must_equal false
+
+    t.store(true)
+    t.cache_method_cached?(:store, false).must_equal false
+    t.cache_method_cached?(:store, true).must_equal true
+  end
 end

@@ -206,3 +206,23 @@ class MrHyde
     'just a guy'
   end
 end
+
+class Tardis
+  def store(v)
+    v
+  end
+
+  def self.long_value
+    true
+  end
+
+  def self.long_ttl
+    3600
+  end
+
+  def self.short_ttl
+    1
+  end
+
+  cache_method :store, nil, ttl_func: lambda { |v| v.eql?(Tardis.long_value) ? Tardis.long_ttl : Tardis.short_ttl }
+end

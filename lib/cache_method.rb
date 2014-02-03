@@ -73,7 +73,7 @@ module CacheMethod
     end
 
     def cache_method_cached?(method_id, *args)
-      ::CacheMethod::CachedResult.new(self, method_id, nil, nil, args).exist?
+      ::CacheMethod::CachedResult.new(self, method_id, nil, nil, {}, args).exist?
     end
   end
 
@@ -92,11 +92,11 @@ module CacheMethod
     #       end
     #       cache_method :get_latest_entries
     #     end
-    def cache_method(method_id, ttl = nil)
+    def cache_method(method_id, ttl = nil, options = {})
       original_method_id = "_cache_method_#{method_id}"
       alias_method original_method_id, method_id
       define_method method_id do |*args, &blk|
-        ::CacheMethod::CachedResult.new(self, method_id, original_method_id, ttl, args, &blk).fetch
+        ::CacheMethod::CachedResult.new(self, method_id, original_method_id, ttl, options, args, &blk).fetch
       end
     end
 
