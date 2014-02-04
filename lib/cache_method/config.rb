@@ -13,7 +13,7 @@ module CacheMethod
     def initialize
       @mutex = ::Mutex.new
     end
-    
+
     # Whether to use "generational" caching. Default is true.
     #
     # Pro: enables clearing/flushing/expiring specific methods
@@ -23,11 +23,11 @@ module CacheMethod
     def generational=(boolean)
       @generational = boolean
     end
-    
+
     def generational? #:nodoc:
       @generational == true or @generational.nil?
     end
-    
+
     # Storage for the cache.
     #
     # Supported memcached clients:
@@ -51,7 +51,18 @@ module CacheMethod
         @storage ||= ::Cache.new
       end
     end
-    
+
+    # Whether to use the environment name as part of the key. Default is false.
+    #
+    # Set to true if you want easier testing environment scenarios
+    def environmental_key=(boolean)
+      @environmental_key = boolean
+    end
+
+    def environmental_key? #:nodoc:
+      @environmental_key == true or !@environmental_key.nil?
+    end
+
     # TTL for method caches. Defaults to 24 hours or 86,400 seconds.
     #
     # Example:
@@ -59,7 +70,7 @@ module CacheMethod
     def default_ttl=(seconds)
       @default_ttl = seconds
     end
-    
+
     def default_ttl #:nodoc:
       @default_ttl || 86_400
     end

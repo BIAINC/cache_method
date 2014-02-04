@@ -509,4 +509,24 @@ describe CacheMethod do
     t.cache_method_cached?(:store, false).must_equal false
     t.cache_method_cached?(:store, true).must_equal true
   end
+
+  it %{environmental_key} do
+    CacheMethod.config.environmental_key = true
+
+    a = CopyCat1.new 'mimo'
+
+    if RUBY_VERSION >= '1.9'
+      a.echo('hi').must_equal ['hi']
+      a.echo_count.must_equal 1
+
+      a.echo('hi').must_equal ['hi']
+      a.echo_count.must_equal 1
+    else
+      a.echo('hi').must_equal 'hi'
+      a.echo_count.must_equal 1
+
+      a.echo('hi').must_equal 'hi'
+      a.echo_count.must_equal 1
+    end
+  end
 end

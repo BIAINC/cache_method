@@ -50,11 +50,16 @@ module CacheMethod
     private
 
     def cache_key
-      if obj.is_a?(::Class) or obj.is_a?(::Module)
-        [ 'CacheMethod', 'CachedResult', method_signature, current_generation, args_digest ].compact.join CACHE_KEY_JOINER
-      else
-        [ 'CacheMethod', 'CachedResult', method_signature, CacheMethod.digest(obj), current_generation, args_digest ].compact.join CACHE_KEY_JOINER
-      end
+      # Format:
+      # [ 'CacheMethod', 'CachedResult', (opt: ENV['RAILS_ENV'],) method_signature, (opt: CacheMethod.digest(obj),) current_generation, args_digest]
+
+      key = [ 'CacheMethod', 'CachedResult' ]
+      key << ENV['RAILS_ENV'] if CacheMethod.config.environmental_key?
+      key << method_signature
+      key << CacheMethod.digest(obj) unless obj.is_a?(::Class) or obj.is_a?(::Module)
+      key << current_generation << args_digest
+
+      key.compact.join CACHE_KEY_JOINER
     end
 
     def current_generation
